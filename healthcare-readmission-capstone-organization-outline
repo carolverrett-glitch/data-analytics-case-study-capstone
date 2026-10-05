@@ -1,0 +1,23 @@
+healthcare-readmissions-capstone/
+│
+├── README.md
+│
+├── data/
+│   └── README.md
+│
+├── sql/
+│   ├── 01_top_medical_specialties.sql
+│   ├── 02_medications_vs_length_of_stay.sql
+│   ├── 03_payer_readmission_rates.sql
+│   ├── 04_demographic_readmission_rates.sql
+│   └── 05_prior_inpatient_readmission.sql
+│
+├── tableau/
+│   └── healthcare_readmissions_dashboard.twbx
+│
+└── images/
+    ├── top_specialties.png
+    ├── medications_vs_stay.png
+    ├── payer_readmissions.png
+    ├── demographic_readmissions.png
+    └── prior_inpatient_readmissions.png
