@@ -1,0 +1,89 @@
+SELECT *
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+LIMIT 10;
+Check for complete upload of data
+SELECT COUNT(*) AS total_encounters FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+Row	total_encounters
+1	101766
+Record Count
+SELECT encounter_id,
+    COUNT(*) AS record_count FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients` GROUP BY encounter_id
+HAVING COUNT(*) > 1
+ORDER BY record_count DESC;
+SELECT
+    COUNT(*) AS total_records,
+    COUNTIF(medical_specialty IS NULL) AS missing_specialty
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`;
+Row	total_records	missing_specialty
+1	101766	0
+Check for medical specialty blank or NULL
+SELECT  COUNT(*) AS total_records,
+    COUNTIF(medical_specialty IS NULL) AS missing_specialty FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients` LIMIT 1000
+SELECT
+    medical_specialty,
+    COUNT(*) AS encounters
+FROM `lunar-prism-510122-n5`.healthcare_analysis.diabetic_patients
+WHERE medical_specialty IS NOT NULL
+GROUP BY medical_specialty
+ORDER BY encounters DESC;
+Row	medical_specialty	encounters
+1	?	49949
+2	InternalMedicine	14635
+3	Emergency/Trauma	7565
+4	Family/GeneralPractice	7440
+5	Cardiology	5352
+SELECT
+    time_in_hospital,
+    COUNT(*) AS patient_encounters,
+    ROUND(AVG(num_medications), 2) AS avg_medications
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+WHERE num_medications IS NOT NULL
+  AND time_in_hospital IS NOT NULL
+GROUP BY time_in_hospital
+ORDER BY time_in_hospital;
+Row	time_in_hospital	patient_encounters	avg_medications
+1	1	14208	11.09
+2	2	17224	12.52
+3	3	17756	14.36
+4	4	13924	15.97
+5	5	9966	17.45
+6	6	7539	18.62
+7	7	5859	19.98
+8	8	4391	21.12
+9	9	3002	21.98
+10	10	2342	23.25
+11	11	1855	23.71
+12	12	1448	23.92
+13	13	1210	24.88
+14	14	1042	25.57
+SELECT
+    medical_specialty,
+    COUNT(*) AS patient_encounters
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+WHERE medical_specialty IS NOT NULL
+  AND medical_specialty != '?'
+GROUP BY medical_specialty
+ORDER BY patient_encounters DESC
+LIMIT 5;SELECT
+    readmitted,
+    COUNT(*) AS encounters
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+GROUP BY readmitted
+ORDER BY encounters DESC;
+
+
+Row	medical_specialty	patient_encounters
+1	InternalMedicine	14635
+2	Emergency/Trauma	7565
+3	Family/GeneralPractice	7440
+4	Cardiology	5352
+5	Surgery-General	3099
+SELECT
+    readmitted,
+    COUNT(*) AS encounters
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+GROUP BY readmitted
+ORDER BY encounters DESC;
+
+
+
