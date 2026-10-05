@@ -1,24 +1,41 @@
+#Check for complete upload of raw data
 SELECT *
 FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
 LIMIT 10;
-Check for complete upload of data
-SELECT COUNT(*) AS total_encounters FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
-Row	total_encounters
-1	101766
-Record Count
+#Query Organization Outline:
+#
+#Record Count
+SELECT COUNT(*) AS total_encounters 
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`
+#Row	total_encounters
+#1	101766
+#Total count of patient encounters: 101766
+
+#Check for duplicate entries
 SELECT encounter_id,
-    COUNT(*) AS record_count FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients` GROUP BY encounter_id
-HAVING COUNT(*) > 1
-ORDER BY record_count DESC;
+    COUNT(*) AS record_count 
+FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients` 
+    GROUP BY encounter_id
+    HAVING COUNT(*) > 1
+    ORDER BY record_count DESC;
+#There is no data to display.
+
+#Create a new table - duplicate of raw table - preserve raw data before beginning the cleaning & transformation process
+
+
+#Checking for  missing medical specialty values 
 SELECT
     COUNT(*) AS total_records,
     COUNTIF(medical_specialty IS NULL) AS missing_specialty
 FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients`;
 Row	total_records	missing_specialty
 1	101766	0
-Check for medical specialty blank or NULL
+
+#Check for medical specialty blank or NULL
 SELECT  COUNT(*) AS total_records,
     COUNTIF(medical_specialty IS NULL) AS missing_specialty FROM `lunar-prism-510122-n5.healthcare_analysis.diabetic_patients` LIMIT 1000
+
+#Evaluating for Top 5 number of patients seen by medical specialty
 SELECT
     medical_specialty,
     COUNT(*) AS encounters
@@ -32,6 +49,8 @@ Row	medical_specialty	encounters
 3	Emergency/Trauma	7565
 4	Family/GeneralPractice	7440
 5	Cardiology	5352
+
+
 SELECT
     time_in_hospital,
     COUNT(*) AS patient_encounters,
