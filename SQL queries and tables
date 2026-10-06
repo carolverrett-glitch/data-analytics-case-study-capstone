@@ -76,3 +76,93 @@ ORDER BY encounters DESC LIMIT (5);
 #4	    Cardiology	             5352
 #5	    Surgery-General	         3099
 
+#Compare the average amount of medications to the length of time in hospital
+SELECT time_in_hospital,
+    COUNT(*) AS patient_encounters,
+    ROUND(AVG(num_medications), 2) AS avg_medications FROM `lunar-prism-510122-n5.analysis_tables.clean_analysis_tables` WHERE num_medications IS NOT NULL
+  AND time_in_hospital IS NOT NULL
+GROUP BY time_in_hospital
+ORDER BY time_in_hospital;
+
+#Compare Medicare vs Medicaid readmission rates.
+SELECT payer_code,
+    COUNT(*) AS total_encounters,
+    COUNTIF(readmitted = '<30') AS readmitted_under_30,
+    ROUND(
+        COUNTIF(readmitted = '<30') / COUNT(*) * 100,
+        2
+    ) AS readmission_rate 
+    FROM `lunar-prism-510122-n5.analysis_tables.clean_analysis_data_table` 
+    WHERE payer_code IN ('MC', 'MD')
+GROUP BY payer_code
+ORDER BY readmission_rate DESC;
+#Row    payer_code    total_encounters    readmitted_under_30    readmission_rate
+#1	        MD	        3532	                    416	                11.78
+#2	        MC	       32439	                   3810	                11.75
+
+#Compare readmission rates by race.
+SELECT  race,
+    COUNT(*) AS total_encounters,
+    COUNTIF(readmitted = '<30') AS readmitted_under_30,
+    ROUND(
+        SAFE_DIVIDE(
+            COUNTIF(readmitted = '<30'),
+            COUNT(*)
+        ) * 100,
+        2
+    ) AS readmission_rate 
+FROM `lunar-prism-510122-n5.analysis_tables.clean_analysis_tables` 
+WHERE race IS NOT NULL
+GROUP BY race
+ORDER BY readmission_rate DESC;
+
+#Compare readmission rates by gender.
+SELECT   gender,
+    COUNT(*) AS total_encounters,
+    COUNTIF(readmitted = '<30') AS readmitted_under_30,
+    ROUND(
+        SAFE_DIVIDE(
+            COUNTIF(readmitted = '<30'),
+            COUNT(*)
+        ) * 100,
+        2
+    ) AS readmission_rate
+ FROM `lunar-prism-510122-n5.analysis_tables.clean_analysis_tables` 
+ WHERE gender IS NOT NULL
+GROUP BY gender
+ORDER BY readmission_rate DESC;
+#Row    gender    total_encounters    readmitted_under_30    readmission_rate
+#1        Female    54708	                6152	                11.25
+#2	        Male	47055	                5205	                11.06
+
+#Compare readmission rates by age.
+SELECT age,
+    COUNT(*) AS total_encounters,
+    COUNTIF(readmitted = '<30') AS readmitted_under_30,
+    ROUND(
+        SAFE_DIVIDE(
+            COUNTIF(readmitted = '<30'),
+            COUNT(*)
+        ) * 100,
+        2
+     )AS readmission_rate 
+   FROM `lunar-prism-510122-n5.analysis_tables.clean_analysis_tables` 
+  WHERE age IS NOT NULL
+GROUP BY age
+ORDER BY age;
+
+#Compare readmission rates according to prior inpatient visits.
+SELECT
+    number_inpatient AS prior_inpatient_visits,
+    COUNT(*) AS total_encounters,
+    COUNTIF(readmitted = '<30') AS readmitted_under_30,
+    ROUND(
+        SAFE_DIVIDE(
+            COUNTIF(readmitted = '<30'),
+            COUNT(*)
+        ) * 100,
+        2
+    ) AS readmission_rate
+FROM `lunar-prism-510122-n5.analysis_tables.clean_analysis_tables`
+GROUP BY prior_inpatient_visits
+ORDER BY prior_inpatient_visits;
